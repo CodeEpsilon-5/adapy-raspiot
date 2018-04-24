@@ -5,6 +5,7 @@ import logging
 import os
 import sy
 from Adafruit_IO import MQTTClient
+from mods import essentials
 from schema import (
         And,
         Optional,
@@ -56,6 +57,17 @@ def message(client, feed_id, payload):
         data = json.loads(payload)
     except json.decoder.JSONDecodeError as e:
         log.error('Invalid JSON payload')
+        return
+    log.debug(f'Incoming Payload: {data}')
+    try:
+        grp = data['group']
+        cmd = data['command']
+        loaded_mods[grp][cmd]()
+        log.info(f'Command Executed: {grp}.{cmd}'
+    except KeyError:
+        log.error('Group or Command not found')
+        log.debug(f'group: {data["group"]} command: {data["command"]}')
+        log.debug(f'mods + commands: {loaded_mods}')
 
 
 def main():
@@ -72,7 +84,14 @@ client.on_connect = connected
 client.on_disconnect = disconnected
 client.on_message = message
 
+loaded_mods: Dict[str, Dict[str, Callable]] = {}
+
 if __name__ == '__main__':
+    loaded_mods['essentials'] = {}
+    funcs = list(filter(lambda x: not x.startswith('__'), dir(essentials)))
+    for func in funcs:
+        loaded_mods['essentials'][func] = getattr(essentials, func)
+
     client.connect()
     client.loop_background()
     main()
