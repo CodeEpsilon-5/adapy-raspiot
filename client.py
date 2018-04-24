@@ -1,3 +1,4 @@
+import mods.config as config
 import datetime
 import importlib
 import json
@@ -62,8 +63,9 @@ def message(client, feed_id, payload):
     try:
         grp = data['group']
         cmd = data['command']
-        loaded_mods[grp][cmd]()
-        log.info(f'Command Executed: {grp}.{cmd}'
+        loaded_mods[grp][cmd](data['value'])
+        assert loaded_mods.get(data['group']) is not None
+        log.info(f'Command Executed: {grp}.{cmd}')
     except KeyError:
         log.error('Group or Command not found')
         log.debug(f'group: {data["group"]} command: {data["command"]}')
@@ -84,7 +86,7 @@ client.on_connect = connected
 client.on_disconnect = disconnected
 client.on_message = message
 
-loaded_mods: Dict[str, Dict[str, Callable]] = {}
+loaded_mods: Dict[str, Dict[str, Callable]] = config.loaded_mods
 
 if __name__ == '__main__':
     loaded_mods['essentials'] = {}
