@@ -4,7 +4,7 @@ import importlib
 import json
 import logging
 import os
-import sy
+import sys
 from Adafruit_IO import MQTTClient
 from mods import essentials
 from schema import (
