@@ -1,0 +1,9 @@
+{"adafruit": {
+	"username": "CodeEpsilon5", 
+	"key": "e9066370e38245159da18d763cbb5107"
+ },
+ "pccontrol": {
+ 	"mac":"xx:xx:xx:xx:xx:xx:xx",
+	"rlpin":14 
+ }
+}

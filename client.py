@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import mods.config as config
 import datetime
 import importlib
@@ -74,7 +76,10 @@ def message(client, feed_id, payload):
 
 def main():
     while True:
-        pass
+        try:
+            pass
+        except KeyboardInterrupt:
+            log.info('Client disconnect')
 
 
 client = MQTTClient(
